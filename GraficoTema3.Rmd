@@ -13,7 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(readr)
 library(ggplot2)
-library(plotlib)
+library(plotly)
+
 owid_covid_data <- read_csv("owid-covid-data.csv", 
     col_types = cols(date = col_date(format = "%Y-%m-%d")))
 # Filtrar los datos para incluir solo EEUU e Italia
@@ -51,6 +52,9 @@ grafico <- ggplot(data = owid_covid_data_filtered_weekly, aes(x = week, y = aver
 
 grafico
 
+grafico_interactivo<-ggplotly(grafico)
+
+grafico_interactivo
 
 ```
 
