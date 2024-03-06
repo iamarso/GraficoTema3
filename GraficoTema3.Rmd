@@ -19,7 +19,7 @@ owid_covid_data <- read_csv("owid-covid-data.csv",
     col_types = cols(date = col_date(format = "%Y-%m-%d")))
 # Filtrar los datos para incluir solo EEUU e Italia
 owid_covid_data_filtered <- owid_covid_data %>%
-  filter(location %in% c("United States", "Italy", "United Kingdom","Canada","Japan","Spain"))
+  filter(location %in% c("United States", "Italy", "United Kingdom","Canada","Japan","Spain", "Germany", "France"))
 
 # Agrupar los datos por intervalos de 7 días y calcular el promedio semanal de nuevas muertes confirmadas por millón de personas para cada país
 owid_covid_data_filtered_weekly <- owid_covid_data_filtered %>%
@@ -39,8 +39,7 @@ grafico <- ggplot(data = owid_covid_data_filtered_weekly, aes(x = week, y = aver
        y = "Average Deaths per million",
        color = "Location") +
   scale_y_continuous(limits = c(0, NA), breaks = seq(0, 18, by = 2)) +
-  scale_x_date(date_breaks = "35 weeks", date_labels = "%b %d, %Y", limits = c(as.Date("2020-02-12"), as.Date("2024-02-28"))) +
-  #expand_limits(x = as.Date(c("2020-02-13", last_date))) +
+  scale_x_date(breaks = as.Date(c("2020-02-13", "2021-02-13", "2022-02-13", "2023-02-13", "2024-02-28")), date_labels = "%b %d, %Y", limits = c(as.Date("2020-02-12"), as.Date("2024-02-28"))) +
   theme_minimal() +
   theme(panel.background = element_blank(),
         panel.grid.major.y = element_line(color = "grey", linetype = "dashed"),
