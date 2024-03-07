@@ -1,7 +1,11 @@
 ---
-title: "PRUEBA1"
-output: html_document
+title: "GraficoTema3"
+author: Iñaki Martin Sorribes, Carlos Tato Sapena, Natxo de la Rubia Navarro, Nicolás
+  Eulogio Alen
 date: "2024-03-01"
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -14,10 +18,9 @@ library(dplyr)
 library(readr)
 library(ggplot2)
 library(plotly)
-
 owid_covid_data <- read_csv("owid-covid-data.csv", 
     col_types = cols(date = col_date(format = "%Y-%m-%d")))
-# Filtrar los datos para incluir solo EEUU e Italia
+# Filtramos los datos
 owid_covid_data_filtered <- owid_covid_data %>%
   filter(location %in% c("United States", "Italy", "United Kingdom","Canada","Japan","Spain", "Germany", "France"))
 
@@ -29,14 +32,13 @@ owid_covid_data_filtered_weekly <- owid_covid_data_filtered %>%
   ungroup() %>%
   mutate(week = as.Date(week))
 
-# Visualizar los datos con líneas solamente y ajustar la escala del eje y
+# Visualizar los datos
 grafico <- ggplot(data = owid_covid_data_filtered_weekly, aes(x = week, y = average_new_deaths_per_million, color = location)) +
-  geom_line(aes(y = average_new_deaths_per_million, group = location, show.legend = FALSE)) +
+  geom_line(size = ifelse(owid_covid_data_filtered_weekly$location == "Spain", 1, 0.5)) +
   geom_hline(yintercept = 0, color = "azure4", show.legend = FALSE) +
-  labs(title = "Daily new confirmed COVID-19 deaths per million people",
+  scale_color_manual(values=c("Spain"="red", "Canada"="brown4", "United States"="purple", "Italy"="cadetblue2", "France"="yellow", "Germany"="chartreuse3", "Japan"="grey", "United Kingdom"="pink"))+
+  labs(x=NULL, y=NULL, title = "Daily new confirmed COVID-19 deaths per million people",
        subtitle = "7-day rolling average. Due to varying protocols and challenges in the attribution of the cause of death, the number of confirmed deaths may not accurately represent the true number of deaths caused by COVID-19.",
-       x = "Week",
-       y = "Average Deaths per million",
        color = "Location") +
   scale_y_continuous(limits = c(0, NA), breaks = seq(0, 18, by = 2)) +
   scale_x_date(breaks = as.Date(c("2020-02-13", "2021-02-13", "2022-02-13", "2023-02-13", "2024-02-28")), date_labels = "%b %d, %Y", limits = c(as.Date("2020-02-12"), as.Date("2024-02-28"))) +
@@ -44,16 +46,14 @@ grafico <- ggplot(data = owid_covid_data_filtered_weekly, aes(x = week, y = aver
   theme(panel.background = element_blank(),
         panel.grid.major.y = element_line(color = "grey", linetype = "dashed"),
         panel.grid.minor = element_blank(),
-        axis.text.x = element_text( hjust = 0.5, vjust = 1),
-        plot.title = element_text(face = "bold", color = "azure4"),  # Para hacer el título en negrita
-        plot.subtitle = element_text(color = "azure4"))  # Para cambiar el color del subtítulo)
-  
+        plot.title = element_text(face = "bold", color = "azure4"),  
+        plot.subtitle = element_text(color = "azure4")) 
 
 grafico
 
 grafico_interactivo<-ggplotly(grafico)
 
-grafico_interactivo
+#grafico_interactivo
 
 ```
 
